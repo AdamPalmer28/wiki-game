@@ -37,7 +37,7 @@ class wiki_game:
         self.end_url = end_url
         self.max_steps = max_steps
 
-        # temp 
+        self.time_start = time.time()
         self.found = 0
 
         # Variable setup
@@ -59,12 +59,7 @@ class wiki_game:
 
                 # increase depth of lk tree
                 self.increase_lk_depth()
-  
 
-            if self.end_url in self.next_links:
-                print(f"Path found! {self.depth} steps, (I searched {self.found} pages)")
-                path = self.get_path(self.end_url)
-                return print(f"Path: {path}")
             
             # check if lk tree has found a 
             # local_links = self.lk_next_links.intersection(self.next_links)
@@ -72,11 +67,15 @@ class wiki_game:
             #     # priority next search
             #     self.next_links = local_links
             #     pass
-
+            if self.end_url in self.next_links:
+                # exit
+                return
             
-            print(f"\nFound {self.found} pages so far")
+            print(f"\nFound {self.found} links so far")
             print(f"Depth: {self.depth}, Visited tree: {len(self.visited_tree)}")
             print(f"lk depth: {self.lk_depth}, lk visited tree: {len(self.lk_visited_tree)}")
+
+
             
         
         return print(f"no path found in {self.max_steps} steps")
@@ -87,16 +86,11 @@ class wiki_game:
         Increase depth by 1 of the general tree
         """
 
-        print(len(self.next_links))
-        print("Search")
-        new_links = asyncio.run(self.search_links(self.next_links))
+        new_links = asyncio.run(self.search_links(self.next_links, fwd_search = True))
         self.visited_tree.update(self.next_links) # update visited tree
-
-        #print(new_links)
 
         self.next_links = new_links - self.visited_tree # update next links
 
-        print(len(self.next_links))
 
         self.depth += 1
 
@@ -104,7 +98,6 @@ class wiki_game:
         """
         Increase depth by 1 of the local knowledge tree
         """
-        print("LK search")
         new_links = asyncio.run(self.search_links(self.lk_next_links))
         self.lk_visited_tree.update(self.lk_next_links) # update visited tree
 
@@ -118,17 +111,17 @@ class wiki_game:
     #       Depth / page searcher (need async)
     # =========================================================================
     
-    async def search_links(self, url_set):
+    async def search_links(self, url_set, fwd_search = False):
         """
         Search for links from a set of urls 
             Calls get_page_links to get all links from a single url
         """
         new_links = set()
 
-        print(f"{len(url_set)}")
+        print(f"{'Normal depth' if fwd_search else 'LK depth'}: {len(url_set)}")
         
         async with httpx.AsyncClient() as client:
-            tasks = [self.get_page_links(url, client) for url in url_set]
+            tasks = [self.get_page_links(url, client, fwd_search) for url in url_set]
 
             responses = await asyncio.gather(*tasks)
 
@@ -137,13 +130,11 @@ class wiki_game:
             # add links to new links
             new_links.update(all_links)
 
-
-        self.found += len(url_set) 
         return new_links
 
     # Individual page searcher
     # =========================================================================
-    async def get_page_links(self, url, client):
+    async def get_page_links(self, url, client, fwd_search = False):
         """
         Get all links from a given url/page
         """
@@ -164,7 +155,15 @@ class wiki_game:
                 href = 'https://en.wikipedia.org' + href
                 links.append(href)
 
-        #print(f"Found {len(links)} links from {url}")
+        self.found += len(links) # links found
+
+        if fwd_search:
+            if self.end_url in links:
+                    print(f"Path found! {self.depth + 1} steps, (I found {self.found} wiki links)")
+                    print(f"total time: {time.time() - self.time_start} seconds")
+                    path = self.get_path(self.end_url)
+                    print(f"Path: {path}")
+
         return links
     
 
@@ -179,14 +178,18 @@ class wiki_game:
         #path = [self.start_url]
         path = [self.end_url]
 
-        def search_nested_dict(dict_value):
+        def search_nested_dict(dict_value: dict):
             for key, value in dict_value.items():
-                if value == url:
-                    # end url found
-                    path.append(key)
-                    return True
+
+                if isinstance(value, list):
+                    # end depth
+                    if url in value:
+                        # end url found
+                        path.append(key)
+                        return True
+                    
                 
-                if isinstance(value, dict):
+                elif isinstance(value, dict):
                     # search nested dict
                     result = search_nested_dict(value)
 
@@ -214,7 +217,7 @@ class wiki_game:
         self.lk_depth = 0
 
         # path
-        self.path = []
+        self.path = {}
 
 
 if __name__ == "__main__":
@@ -222,6 +225,6 @@ if __name__ == "__main__":
     start_url = "https://en.wikipedia.org/wiki/Python_(programming_language)"
     end_url = "https://en.wikipedia.org/wiki/Computer_performance"
 
-    game = wiki_game(start_url, end_url, max_steps = 10)
 
+    game = wiki_game(start_url, end_url, max_steps = 10)
     
