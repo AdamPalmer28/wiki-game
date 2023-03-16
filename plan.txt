@@ -1,0 +1,26 @@
+###############################################################################
+Wiki game development plan
+-------------------------------------------------------------------------------
+
+###############################################################################
+
+Technical improvements:
+-----------------------
+- [1] finish technical restructuring
+- [2] add code evaluator
+- [3] async evaluation:
+    how to extract the maximum from async
+    - create a large list of urls
+    - test an async function vs sync function on the list
+    - plot the results for increasing number of links
+- priority queue
+    - scoring system
+    - plan priority factors
+    - lk evaluation element
+- sumarise a wiki page, key words etc. 
+- get path
+
+
+Plans:
+------
+- large scale simulation to pull out link data -> to create graph plot
