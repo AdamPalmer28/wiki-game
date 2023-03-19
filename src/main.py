@@ -11,13 +11,7 @@ Objective:  (2 ways to play)
 
 """
 
-"""
-TODO:
 
-- filter down the wiki page to just articles
-- learn how to use async
-- learn how to use httpx (async requests)
-"""
 
 import time
 from fwd_search import fwd_search
@@ -36,6 +30,9 @@ class wiki_game:
 
         self.time_start = time.time()
 
+        self.fwd_search = fwd_search(set([start_url]), end_url)
+        self.lk_search = lk_search(set([end_url]))
+
         # Run game
         self.run()
 
@@ -43,23 +40,24 @@ class wiki_game:
         """
         Main algorithm to find the path from start_url to end_url
         """
-        while self.lk_depth <= self.max_steps:
+        while self.fwd_search.depth <= self.max_steps:
             
             # increase depth of general tree
-            self.increase_depth()
+            self.fwd_search.increase_depth()
 
-            if 3 * self.lk_depth < self.depth:
+            if 3 * self.lk_search.depth < self.fwd_search.depth:
 
                 # increase depth of lk tree
-                self.increase_lk_depth()
+                self.lk_search.increase_depth()
 
-            if self.end_url in self.next_links:
+            if self.end_url in self.fwd_search.next_links:
                 # exit
+                print("Done")
                 return
             
-            print(f"\nFound {self.found} links so far")
-            print(f"Depth: {self.depth}, Visited tree: {len(self.visited_tree)}")
-            print(f"lk depth: {self.lk_depth}, lk visited tree: {len(self.lk_visited_tree)}")
+            #print(f"\nFound {self.found} links so far")
+            print(f"Depth: {self.fwd_search.depth}, Visited tree: {len(self.fwd_search.tree)}")
+            print(f"lk depth: {self.lk_search.depth}, lk visited tree: {len(self.lk_search.tree)}")
 
 
             
@@ -71,8 +69,8 @@ class wiki_game:
 
 if __name__ == "__main__":
 
-    start_url = "https://en.wikipedia.org/wiki/Python_(programming_language)"
-    end_url = "https://en.wikipedia.org/wiki/Computer_performance"
+    start_url = "Python_(programming_language)"
+    end_url = "Computer_performance"
 
 
     game = wiki_game(start_url, end_url, max_steps = 10)
