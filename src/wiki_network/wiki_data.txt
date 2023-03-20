@@ -3,7 +3,20 @@
 Data Information
 -------------------------------------------------------------------------------
 
+###############################################################################
+###############################################################################
+
+-------------------------------------------------------------------------------
 Columns:
-url_name - wiki extension ('https://en.wikipedia.org/wiki/' + url)
-###############################################################################
-###############################################################################
+========
+url_name    - wiki extension ('https://en.wikipedia.org/wiki/' + url)
+n_out       - number of unique outgoing links (i.e. links on the page)
+headers     - list of headers
+n_out_headers - number of unique outgoing links in headers
+
+    <( data from other pages )>
+n_in        - number of unique incoming connections (i.e. other pages that link 
+            to this page)
+in_pages    - list of pages that link to this page
+
+-------------------------------------------------------------------------------
