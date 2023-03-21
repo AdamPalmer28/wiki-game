@@ -6,7 +6,6 @@ Wiki game development plan
 
 Technical improvements:
 -----------------------
-- [1] finish technical restructuring
 - [2] add code evaluator
 - [3] async evaluation:
     how to extract the maximum from async
@@ -17,7 +16,11 @@ Technical improvements:
     - scoring system
     - plan priority factors
     - lk evaluation element
-- sumarise a wiki page, key words etc. 
+- wiki extracter
+    - get all links
+    - get headers
+    - any other elements
+    - sumarise a wiki page, key words etc. 
 - get path
 
 
