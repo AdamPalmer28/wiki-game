@@ -4,13 +4,11 @@ This module contains the class for a wiki page.
 This class is used to extract the content from a wiki page.
 """
 
-
-
 class page_extract:
     """
     Extract the content from a wiki page
     """
-    
+
     def __init__(self, content, wiki_url: str):
 
         self.get_artical(content) # filter page content

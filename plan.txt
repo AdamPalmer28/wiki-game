@@ -6,7 +6,8 @@ Wiki game development plan
 
 Technical improvements:
 -----------------------
-- [2] add code evaluator
+- [1] add code profiler
+- [2] Create wiki links extracter - to csv
 - [3] async evaluation:
     how to extract the maximum from async
     - create a large list of urls
