@@ -70,7 +70,7 @@ class wiki_links:
 
         if self.fwd_search:
             if self.end_url in links:
-                    print(f"Path found! {self.depth + 1} steps, (I found {self.url_found} wiki links)")
-                    print(f"total time: {time.time() - self.time_start} seconds")
+                print(f"Path found! {self.depth + 1} steps, (I found {self.url_found} wiki links)")
+                print(f"total time: {time.time() - self.time_start} seconds")
 
         return links

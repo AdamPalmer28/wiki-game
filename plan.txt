@@ -6,13 +6,14 @@ Wiki game development plan
 
 Technical improvements:
 -----------------------
-- [1] add code profiler
 - [2] Create wiki links extracter - to csv
 - [3] async evaluation:
     how to extract the maximum from async
-    - create a large list of urls
-    - test an async function vs sync function on the list
-    - plot the results for increasing number of links
+    - increase link list to 500
+    - make the increment of links a parameter
+    - run async n times to filter out fluctuations (store as array)
+    - run async n times to get average / median
+
 - priority queue
     - scoring system
     - plan priority factors

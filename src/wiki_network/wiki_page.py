@@ -39,4 +39,4 @@ class page_extract:
         Get the artical from wiki page, removing all irrelevant html
         elements which are not going to yeild any useful information
         """
-        pass
+        # id = "mw-content-text"

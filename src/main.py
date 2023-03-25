@@ -71,7 +71,26 @@ if __name__ == "__main__":
 
     start_url = "Python_(programming_language)"
     end_url = "Computer_performance"
-
-
-    game = wiki_game(start_url, end_url, max_steps = 10)
     
+    wiki_game(start_url, end_url, max_steps = 10)
+
+    # == Optermisation ==
+    import cProfile
+    import pstats
+    
+    cProfile.run("wiki_game(start_url, end_url, max_steps = 10)", "code_analysis/output.dat")
+    
+    # internal time
+    with open("code_analysis/output_time.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("time").print_stats()
+
+    # function calls
+    with open("code_analysis/output_calls.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("calls").print_stats()
+
+    # cumulative time
+    with open("code_analysis/output_cumulative.txt","w") as f:
+        p = pstats.Stats("code_analysis/output.dat", stream=f)
+        p.sort_stats("cumulative").print_stats()
