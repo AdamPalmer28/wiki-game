@@ -15,7 +15,7 @@ class async_eval:
 
         # testing parameters
         self.increment = increment
-        self.max_links = max_links
+        self.max_links = max_links + 1
         self.rerun = rerun
 
         # testing sets
@@ -65,30 +65,50 @@ class async_eval:
 
         fig, ax = plt.subplots(figsize= (16,12), nrows=2, ncols=2)
 
-        n = np.array([self.test_set])
-        n = np.repeat(n, repeats = self.rerun, axis=0)
+        test_set = np.array([self.test_set])
+        test_set = np.repeat(test_set, repeats = self.rerun, axis=0)
 
 
         for fn, results in fn_results.items():
 
-            results_norm = np.divide(results, n) # divide by number of links
+            mean_results_nonorm = np.mean(results, axis=0)
+            results_norm = np.divide(results, test_set) # divide by number of links
             links_per_sec = 1 / results_norm # links per second
+
+            # mean, median, max per link
+            mean_results = np.mean(results_norm, axis=0)
+            median_results = np.median(results_norm, axis=0)
+            max_results = np.max(results_norm, axis=0)
+
+            # stats on computation time
+            var_results = np.var(results, axis=0) * ((self.rerun) / (self.rerun-1)) # sample sd
+            sd_results = np.sqrt(var_results)
+
+            lower_ci = np.divide((mean_results_nonorm - 1.96 * (sd_results) / np.sqrt(self.rerun)), test_set[0])
+            upper_ci = np.divide((mean_results_nonorm + 1.96 * (sd_results) / np.sqrt(self.rerun)), test_set[0])
+
+            # Plot results
+            # =================
+
             # mean
-            ax[0,0].plot(self.test_set, np.mean(results_norm, axis=0), label=f'{fn}')
+            ax[0,0].plot(self.test_set, mean_results, label=f'{fn}')
+            # confidence interval
+            ax[0,0].fill_between(self.test_set, lower_ci, upper_ci, alpha=0.2)
             ax[0,0].set_title('Average time taken per link')
             ax[0,0].set_yscale('log')
             ax[0,0].legend(loc=0)
 
             # median & max
-            ax[0,1].plot(self.test_set, np.median(results_norm, axis=0), label=f'{fn}-median')
-            ax[0,1].plot(self.test_set, np.max(results_norm, axis=0), label=f'{fn}-max')
-            ax[0,1].set_title('Median (& max) time taken per link')
+            ax[0,1].plot(self.test_set, median_results, label=f'{fn}-median')
+            ax[0,1].plot(self.test_set, max_results, label=f'{fn}-max')
+            ax[0,1].set_title('Time taken per link')
             ax[0,1].set_yscale('log')
             ax[0,1].legend(loc=0)
 
-            # std
-            ax[1,0].plot(self.test_set, np.divide(np.std(results, axis=0),n), label=f'{fn}')
-            ax[1,0].set_title('Standard deviation of time taken per link')
+            # std - will be url in future
+            ax[1,0].plot(self.test_set, sd_results, label=f'{fn}')
+            ax[1,0].set_title('Standard deviation of computation')
+
             # links per second
             ax[1,1].plot(self.test_set, np.mean(links_per_sec, axis=0), label=f'{fn}')
             ax[1,1].set_title('Average links per second')
@@ -108,5 +128,5 @@ class async_eval:
 
 if __name__ == '__main__':
 
-    fig = async_eval([af.gather_links], increment=25, 
-               max_links=200, rerun=3)
+    fig = async_eval([af.gather_links], increment=50, 
+               max_links=800, rerun=5)

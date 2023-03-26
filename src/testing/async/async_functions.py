@@ -22,5 +22,10 @@ async def gather_links(url_set):
 async def get_page_links(url, client):
 
     url = 'https://en.wikipedia.org/wiki/' + url
-    response = await client.get(url)
+    try:
+        response = await client.get(url)
+    except:# need to make better error handling
+        print(f"Error: {url}")
+
+        return 
     return
