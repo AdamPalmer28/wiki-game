@@ -12,7 +12,7 @@ Technical improvements:
     - increase link list to 500
     - make the increment of links a parameter
     - run async n times to filter out fluctuations (store as array)
-    - run async n times to get average / median
+    - run async n times to get average / median / min / max
 
 - priority queue
     - scoring system
