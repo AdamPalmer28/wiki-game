@@ -4,7 +4,7 @@ This module contains the class for a wiki page.
 This class is used to extract the content from a wiki page.
 """
 
-class page_extract:
+class artical_content:
     """
     Extract the content from a wiki page
     """
