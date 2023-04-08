@@ -3,6 +3,7 @@ This module contains the class for a wiki page.
 
 This class is used to extract the content from a wiki page.
 """
+from bs4 import BeautifulSoup
 
 class artical_content:
     """
@@ -39,4 +40,5 @@ class artical_content:
         Get the artical from wiki page, removing all irrelevant html
         elements which are not going to yeild any useful information
         """
-        # id = "mw-content-text"
+        content = BeautifulSoup(content.content, 'html.parser')
+        self.page = content.find('div', id = "mw-content-text")
